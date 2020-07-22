@@ -1,6 +1,6 @@
 import requests
-from view import View
 from model import Model
+from view import View
 
 
 class Controller:
@@ -8,32 +8,38 @@ class Controller:
     def __init__(self):
         self.view = View()
         self.model = Model()
+        self.process()
 
     def process(self):
-        # self.get_data()
-        choice = self.view.choose_scenario()
+        self.model.get_data()
 
-        # if choice == '1':
-        #     self.view.scenario1()
-        # elif choice == '2':
-        #     self.view.scenario2()
+        a = self.view.choose_scenario()
 
-        # a = self.view.get_categorie()
+        if a == '1':
+            self.scenario1()
+        elif a == '2':
+            self.scenario2()
+        else:
+            return self.view.choose_scenario()
 
-        # b = self.model.get_categorie(a)
+    def scenario1(self):
+        query = ("SELECT category, last_name, hire_date FROM employees "
+                 "WHERE hire_date BETWEEN %s AND %s")
+
+    def scenario2(self):
+        category = self.view.choose_category()
+
+        b = self.model.get_categories(category)
 
         # c = self.view.print_aliment(b)
 
-        # d = self.model.best_element(a, c)
+        # d = self.model.best_element_by_cat(a, c)
 
         # e = self.view.save_aliment(d)
 
         # if e = True
-
         pass
-
-    
 
 
 if __name__ == '__main__':
-    Controller
+    Controller()
