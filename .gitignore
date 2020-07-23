@@ -143,3 +143,6 @@ US.md
 
 tests.py
 tests.sql
+
+Pipfile
+Pipfile.lock
