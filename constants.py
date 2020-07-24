@@ -10,7 +10,7 @@ TABLES = {}
 TABLES['categories'] = (
     "CREATE TABLE categories ("
     "   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,"
-    "   name VARCHAR(14) NOT NULL,"
+    "   name VARCHAR(50) NOT NULL,"
     "   PRIMARY KEY (id)"
     ")"
 )

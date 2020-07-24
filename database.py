@@ -14,6 +14,8 @@ class Database:
         self.cursor = self.cnx.cursor()
         self.create_database()
         self.create_tables()
+        self.model = Model()
+        self.insert_data()
 
     def create_database(self):
 
@@ -48,8 +50,26 @@ class Database:
             else:
                 print("OK")
 
-        self.cursor.close()
-        self.cnx.close()
+        # self.cursor.close()
+        # self.cnx.close()
+
+    def insert_data(self):
+        try:
+            add_categories = ("INSERT INTO categories"
+                              "(name) "
+                              "VALUES (%s)")
+            data_categories = self.model.get_categories()
+            self.cursor.executemany(add_categories, data_categories)
+            self.cnx.commit()
+            print(self.cursor.rowcount, "Datas inserted successfully into Categories table")
+            self.cursor.close()
+        except mysql.connector.Error as err:
+            print("Failed to insert datas into Categories table. {}".format(err))
+
+        finally:
+            if self.cnx.is_connected():
+                self.cnx.close()
+                print("MySQL connection is closed")
 
 
 if __name__ == '__main__':

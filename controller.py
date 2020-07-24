@@ -11,7 +11,7 @@ class Controller:
         self.process()
 
     def process(self):
-        self.model.get_data()
+        #self.model.get_data()
 
         a = self.view.choose_scenario()
 
@@ -19,12 +19,18 @@ class Controller:
             self.scenario1()
         elif a == '2':
             self.scenario2()
-        else:
-            return self.view.choose_scenario()
 
     def scenario1(self):
-        query = ("SELECT category, last_name, hire_date FROM employees "
-                 "WHERE hire_date BETWEEN %s AND %s")
+        choice = self.view.display_saved_aliments()
+        if choice == '1':
+            # Show all saved aliments
+            pass
+        elif choice == '2':
+            # Show saved aliments by cat
+            pass
+
+        # query = ("SELECT category, last_name, hire_date FROM employees "
+        #          "WHERE hire_date BETWEEN %s AND %s")
 
     def scenario2(self):
         category = self.view.choose_category()
