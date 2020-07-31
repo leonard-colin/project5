@@ -1,6 +1,6 @@
-import requests
 from model import Model
 from view import View
+from database import Database
 
 
 class Controller:
@@ -8,10 +8,14 @@ class Controller:
     def __init__(self):
         self.view = View()
         self.model = Model()
-        self.process()
+        self.database = Database()
+
+    def pre_data(self):
+        self.database.insert_categories()
+        self.database.insert_aliments()
 
     def process(self):
-        #self.model.get_data()
+        # self.model.get_data()
 
         a = self.view.choose_scenario()
 
@@ -29,15 +33,13 @@ class Controller:
             # Show saved aliments by cat
             pass
 
-        # query = ("SELECT category, last_name, hire_date FROM employees "
-        #          "WHERE hire_date BETWEEN %s AND %s")
-
     def scenario2(self):
+
         category = self.view.choose_category()
 
-        b = self.model.get_categories(category)
+        aliment = self.view.choose_aliment(category)
 
-        # c = self.view.print_aliment(b)
+        c = self.view.print_aliment(aliment)
 
         # d = self.model.best_element_by_cat(a, c)
 
