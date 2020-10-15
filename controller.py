@@ -20,7 +20,14 @@ class Controller:
         aliments = self.model.get_aliments(categories)
         aliments = self.clean_data(aliments)
         self.database.insert_aliments(aliments)
-        # self.database.insert_associated()
+        # self.database.insert_associated(categories, aliments)
+
+        # for category in categories:
+        #     for aliment in aliments:
+        #         #for aliment in categories:
+        #         code_tag = 1
+        #         aliment = aliment[code_tag]
+        #         self.database.insert_associated(category, aliment[code_tag])
 
     def clean_data(self, aliments):
         """

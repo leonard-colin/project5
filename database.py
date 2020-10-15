@@ -142,9 +142,9 @@ class Database:
 
     def close_cursor(self):
         """Method that closes database's connexion"""
-        # self.cursor.close()
-        # self.cnx.close()
-        pass
+        self.cursor.close()
+        self.cnx.close()
+
 
 
 # if __name__ == '__main__':
@@ -290,10 +290,6 @@ class Database:
 #                  "WHERE id_categories = %s")
 #         result = self.cursor.execute(query, cat_id)
 #         return result
-#
-#     def close_cursor(self):
-#         """Method that closes database's connexion"""
-#         self.cursor.close()
-#         self.cnx.close()
-#
-#
+
+
+
