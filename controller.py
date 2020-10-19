@@ -18,9 +18,12 @@ class Controller:
         # categories = [[category] for category in categories]
         self.database.insert_categories(categories)
         aliments = self.model.get_aliments(categories)
-        aliments = self.clean_data(aliments)
-        self.database.insert_aliments(aliments)
-        # self.database.insert_associated(categories, aliments)
+        for cat, elements in aliments.items():
+            aliments[cat] = self.clean_data(elements)
+        for cat, elements in aliments.items():
+            self.database.insert_aliments(elements)
+        for cat, elements in aliments.items():
+            self.database.insert_associated(cat, elements)
 
         # for category in categories:
         #     for aliment in aliments:

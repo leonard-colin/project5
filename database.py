@@ -90,7 +90,7 @@ class Database:
         except mysql.connector.Error as err:
             print("Failed to insert datas into Aliments table. {}".format(err))
 
-    def insert_associated(self, cat, barcode):
+    def insert_associated(self, cat, datas):
         """Method that inserts the associated aliments of each category
         into assoc_cat_ali database's table"""
 
@@ -99,10 +99,16 @@ class Database:
                         (barcode_ali, cat_id)
                         VALUES (%s, %s)
                         """)
-            data = (cat, barcode)
 
-            self.cursor.executemany(add_datas, data)
-            self.cnx.commit()
+            query = "SELECT `id` FROM `Categories` WHERE Categories.name = %s"  # "''' + cat + '''"'''
+            self.cursor.execute(query, (cat,))
+            id_cat = self.cursor.fetchone()[0]
+
+            for data in datas:
+                d = (data[0], id_cat)
+                self.cursor.execute(add_datas, d)
+                self.cnx.commit()
+            print(self.cursor.rowcount, "Datas inserted successfully into Associated table \n")
         except mysql.connector.Error as err:
             print("Failed to insert datas into assoc_cat_ali table. {}".format(err))
 
@@ -144,8 +150,6 @@ class Database:
         """Method that closes database's connexion"""
         self.cursor.close()
         self.cnx.close()
-
-
 
 # if __name__ == '__main__':
 #     Database()
@@ -290,6 +294,3 @@ class Database:
 #                  "WHERE id_categories = %s")
 #         result = self.cursor.execute(query, cat_id)
 #         return result
-
-
-

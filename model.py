@@ -41,12 +41,14 @@ class Model:
 
     def get_aliments(self, category):
         """Method that gets aliments from Open Food Facts' API"""
-        aliments = []
+        aliments = dict()
         for cat in category:
+            aliments[cat] = []
+
             with open("api_data_files/of_api_ali" + str(cat) + ".json") as file:
                 file = file.read()
             ret_aliments = json.loads(file)
-            aliments.append(ret_aliments)
+            aliments[cat].append(ret_aliments)
         return aliments
 
 # from __future__ import print_function
