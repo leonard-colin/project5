@@ -17,6 +17,7 @@ TABLES['Categories'] = (
 
 TABLES['Aliments'] = (
     """ CREATE TABLE `Aliments` (
+    `id` INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
     `barcode` VARCHAR(100) PRIMARY KEY NOT NULL,
     `name` VARCHAR(250) NOT NULL, 
     `nutriscore` CHAR(1) NOT NULL, 

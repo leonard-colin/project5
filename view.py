@@ -18,28 +18,33 @@ class View:
                          'Please put the number for your demand : ')
         return scenario
 
-    def display_categories(self, cat):
-        """Method that displays all categories to the user"""
+    # def display_categories(self, categories):
+    #     """Method that displays all categories to the user"""
+    #
+    #     for id_cat, name_cat in categories:
+    #         print("{}. {}".format(id_cat, name_cat))
 
-        for (id, name) in cat:
-            print("{}. {}".format(id, name))
-
-    def choose_category(self):
+    def choose_category(self, categories):
         """Method that asks the user to choose
         one category from the list and returns its choice"""
-
-        self.display_categories()
-        cat_id = int(input("Please choose the number of the category : "))
+        for id_cat, name_cat in categories:
+            print("{}. {}".format(id_cat, name_cat))
+        # self.display_categories(category)
+        cat_id = int(input("Please choose a category number : "))
         return cat_id
 
-    def print_aliment(self, cat):
-        ali = self.database.select_aliment(cat)
-        for (ali_id, name) in ali:
+    # def print_aliment(self, cat):
+    #     ali = self.database.select_aliment(cat)
+    #     for (ali_id, name) in ali:
+    #         ali_list = "{}. {}".format(ali_id, name)
+    #         print(ali_list)
+
+    def choose_aliment(self, category):
+        """Method that asks the user to choose an aliment to substitute and return its choice"""
+        for (ali_id, name) in category:
             ali_list = "{}. {}".format(ali_id, name)
             print(ali_list)
 
-    def choose_aliment(self):
-        """Method that asks the user to choose an aliment to substitute and return its choice"""
 
         choice = input("Select an aliment from the list : \n")
         return choice

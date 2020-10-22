@@ -67,6 +67,7 @@ class Controller:
 
     def process(self):
         """Method that defines all the program's process"""
+        # self.view.first_screen()
         self.pre_process()
         scenario = self.view.choose_scenario()
         # try catch needed si l'utilisateur rentre des lettres
@@ -80,13 +81,17 @@ class Controller:
     def get_substitute(self):
         """Method that gets a substitue aliment with a better nutriscore"""
 
-        self.view.display_categories(self.model.get_categories())
+        categories = self.database.select_categories()
+        category = self.view.choose_category(categories)
 
-        category = self.view.choose_category()
+        aliments = self.database.select_aliments(category)
+        self.view.choose_aliment(aliments)
 
-        self.view.print_aliment(category)
+        #category = self.view.choose_category(category)
 
-        aliment = self.view.choose_aliment()
+        #self.view.print_aliment(category)
+
+        #aliment = self.view.choose_aliment()
 
         # d = self.model.best_element_by_cat(a, c)
 

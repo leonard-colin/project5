@@ -80,9 +80,6 @@ class Database:
                             "(barcode, name, nutriscore, url, stores) "
                             "VALUES (%s, %s, %s, %s, %s) ")
 
-            # print(add_aliments)
-            # print(data_aliments)
-
             self.cursor.executemany(add_aliments, data_aliments)  # id)  # [data, id])
             self.cnx.commit()
             print(self.cursor.rowcount, "Datas inserted successfully into Aliments table \n")
@@ -117,34 +114,24 @@ class Database:
         #         self.cnx.close()
         #         print("MySQL connection is closed")
 
-    def get_categories(self):
+    def select_categories(self):
         """Method that return the id's and names of all categories"""
 
         query = """SELECT id, name FROM Categories """
-        result = self.cursor.execute(query)
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
         return result
 
-    def select_category(self):
-        """Method that selects all the aliments according to one category"""
-        #
-        # query = """SELECT barcode, name FROM Aliments
-        #             INNER JOIN Category
-        #             ON Aliments.barcode = Category.id
-        #             WHERE Category.id = %s  """
-        # self.cursor.execute(query)
-        pass
-
-        # for (id, name) in self.cursor:
-        #     print("{}. {}".format(id, name))
-        # print dans la View
-
-    def select_aliment(self, cat_id):
+    def select_aliments(self, cat_id):
         """Method that..."""
-        # query = ("SELECT id_aliment, name FROM Aliments"
-        #          "WHERE id_categories = %s")
-        # result = self.cursor.execute(query, cat_id)
-        # return result
-        pass
+
+        query = """SELECT Aliments.id, Aliments.name from Aliments
+                INNER JOIN assoc_cat_ali
+                ON Aliments.barcode = assoc_cat_ali.barcode_ali
+                WHERE assoc_cat_ali.cat_id = %s"""
+        self.cursor.execute(query, (cat_id,))
+        result = self.cursor.fetchall()
+        return result
 
     def close_cursor(self):
         """Method that closes database's connexion"""
