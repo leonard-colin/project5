@@ -46,7 +46,8 @@ class Controller:
                     pass
                 else:
                     if products['product_name_fr'] != '':
-                        data = [products['code'], products['product_name_fr'], products['nutriscore_grade'], products['url'],
+                        data = [products['code'], products['product_name_fr'], products['nutriscore_grade'],
+                                products['url'],
                                 products['stores']]
                         lst_data.append(data)
         return lst_data
@@ -70,28 +71,31 @@ class Controller:
         # self.view.first_screen()
         self.pre_process()
         scenario = self.view.choose_scenario()
-        # try catch needed si l'utilisateur rentre des lettres
-        if scenario not in ('1', '2'):
-            self.view.choose_scenario()
-        elif scenario == '1':
+        if scenario == '1':
             self.get_substitute()
         elif scenario == '2':
             self.get_saved_aliments()
 
     def get_substitute(self):
-        """Method that gets a substitue aliment with a better nutriscore"""
+        """Method that gets a substitute aliment with a better nutriscore"""
 
         categories = self.database.select_categories()
         category = self.view.choose_category(categories)
 
         aliments = self.database.select_aliments(category)
-        self.view.choose_aliment(aliments)
+        aliment = self.view.choose_aliment(aliments)
 
-        #category = self.view.choose_category(category)
+        nutriscore = self.database.select_nutriscore(aliment)
+        substitute = self.database.select_substitute(category, nutriscore)  # nutriscore)
+        choice = self.view.print_substitute(aliment, substitute)
+        if choice == '1':
+            pass
 
-        #self.view.print_aliment(category)
+        # category = self.view.choose_category(category)
 
-        #aliment = self.view.choose_aliment()
+        # self.view.print_aliment(category)
+
+        # aliment = self.view.choose_aliment()
 
         # d = self.model.best_element_by_cat(a, c)
 

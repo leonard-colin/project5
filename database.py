@@ -133,6 +133,35 @@ class Database:
         result = self.cursor.fetchall()
         return result
 
+    def select_nutriscore(self, ali_id):
+        query = """SELECT nutriscore from Aliments
+                WHERE id = %s"""
+        self.cursor.execute(query, (ali_id,))
+        nutriscore = self.cursor.fetchone()
+        return nutriscore
+
+    def select_substitute(self, cat_id, nutriscore):
+        """Method that select a substitution aliment with a better nutriscore"""
+
+        query = '''SELECT `name`, `nutriscore`, `url`, `stores` from `Aliments`
+                    INNER JOIN `assoc_cat_ali`
+                    ON Aliments.barcode = assoc_cat_ali.barcode_ali
+                    WHERE assoc_cat_ali.cat_id = %s
+                    AND nutriscore < %s''' #AND nutriscore IN ('a', 'b', 'c')
+
+        nutriscore = ''.join(nutriscore)
+        ali_id = int(cat_id)
+        datas = ali_id, nutriscore
+
+        self.cursor.executemany(query, [datas])
+        substitute = self.cursor.fetchone()
+        return substitute
+        # UNION
+        # SELECT name, nutriscore, url, stores from Aliments
+        # INNER JOIN assoc_cat_ali
+        # ON Aliments.barcode = assoc_cat_ali.barcode_ali
+        # WHERE nutriscore IN ('a', 'b', 'c') AND nutriscore < %s"""
+
     def close_cursor(self):
         """Method that closes database's connexion"""
         self.cursor.close()
