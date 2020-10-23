@@ -43,12 +43,12 @@ TABLES['Substitute'] = (
     """ CREATE TABLE `Substitute` (
     `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
     `ali_source` VARCHAR(250) NOT NULL, 
-    `ali_sub` VARCHAR(250) NOT NULL, 
-    CONSTRAINT fk_ali_source FOREIGN KEY (`ali_source`) REFERENCES Aliments(`barcode`),
-    CONSTRAINT fk_ali_sub FOREIGN KEY (`ali_sub`) REFERENCES Aliments(`barcode`)
+    `ali_sub` VARCHAR(250) NOT NULL
     )
 ENGINE=InnoDB """
 )
+# CONSTRAINT fk_ali_source FOREIGN KEY (`ali_source`) REFERENCES Aliments(`barcode`),
+#     CONSTRAINT fk_ali_sub FOREIGN KEY (`ali_sub`) REFERENCES Aliments(`barcode`)
 # "   CONSTRAINT `fk_categories_id`"
 # "       FOREIGN KEY (`id_categories`)"
 # "       REFERENCES `Categories`(`id_categories`)"

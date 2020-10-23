@@ -13,7 +13,7 @@ class View:
     def choose_scenario(self):
         """Method that asks the user to choose a scenario and returns its answer"""
         # try catch ICI
-        #try:
+        # try:
         scenario = input('1. Find a better aliment \n'
                          '2. Show my substituted aliments \n'
                          'Please enter the number for your demand : ')
@@ -30,37 +30,54 @@ class View:
     def choose_category(self, categories):
         """Method that asks the user to choose
         one category from the list and returns its choice"""
-        for id_cat, name_cat in categories:
-            print("{}. {}".format(id_cat, name_cat))
-        cat_id = int(input("\nPlease choose a category number : "))
-        print("\n")
-        return cat_id
+        try:
+            for id_cat, name_cat in categories:
+                print("{}. {}".format(id_cat, name_cat))
+            cat_id = int(input("\nPlease choose a category number : "))
+            print("\n")
+            return cat_id
+        except ValueError:
+            print("\nPlease enter a valid choice\n")
+            cat_id = self.choose_category(categories)
+            return cat_id
 
     def choose_aliment(self, category):
         """Method that asks the user to choose an aliment to substitute and return its choice"""
-
-        for (ali_id, name) in category:
-            ali_list = "{}. {}".format(ali_id, name)
-            print(ali_list)
-        choice = input("\nSelect an aliment number from the list : ")
-        return choice
+        try:
+            id_list = []
+            for ali_id, name in category:
+                id_list.append(ali_id)
+                ali_list = "{}. {}".format(ali_id, name)
+                print(ali_list)
+            choice = int(input("\nSelect an aliment number from the list : "))
+            if choice not in id_list:
+                print("\nPlease enter a valid choice\n")
+                choice = self.choose_aliment(category)
+            return choice
+        except ValueError:
+            print("\nPlease enter a valid choice\n")
+            choice = self.choose_aliment(category)
+            return choice
 
     def print_substitute(self, aliment, substitute):
         """Methode that..."""
 
-        print("You selected {}".format(aliment))
-        print("""{} has a better nutriscore with {}.
-                You can see it here : {}
-                You will find it in these stores : {}""".format(
-            substitute[0], substitute[1], substitute[2], substitute[3]))
+        try:
+            s = substitute
+            print("\nYou selected {}".format(aliment))
+            print("""{} has a better nutriscore with {}.
+                    You can see it here : {}
+                    You will find it in these stores : {}""".format(
+                s[0], s[1], s[2], s[3]))
+            choice = input("Would you like to save this result ?\n"
+                           "Press 1 to save or 2 to ignore : ")
+            return choice
+        except TypeError:
+            print("This aliment already have a nutriscore 'A'\n"
+                  "You can choose another aliment")
+            choice = self.print_substitute(aliment, substitute)
+            return choice
 
-    # def display_saved_aliments(self):
-    #     """Method that asks the"""
-    #
-    #     choice = input("Do you want to see all your aliments or your aliments by category ?\n"
-    #                    "1. All \n"
-    #                    "2. Aliments by category\n")
-    #     return choice
-
-# if __name__ == '__main__':
-#     View()
+    # def save_substitute(self):
+    #     choice = input("Would you like to save this result ?\n"
+    #                    "Press 1 to save or 2 to ignore")
