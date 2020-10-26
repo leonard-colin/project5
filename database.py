@@ -17,7 +17,7 @@ class Database:
         self.cursor = self.cnx.cursor(buffered=True)
 
     def is_database_created(self):
-        """Method that checks if the database already exists
+        """Method that verify if the database already exists
         and returns the name of the database if it does"""
 
         query = """SELECT SCHEMA_NAME
@@ -40,6 +40,7 @@ class Database:
                 "CREATE DATABASE IF NOT EXISTS {} "
                 "DEFAULT CHARACTER SET 'utf8'".format(DB_NAME))
             print("Database {} created successfully.".format(DB_NAME))
+
         except mysql.connector.Error as err:
             print("Failed creating database: {}".format(err))
 
@@ -61,6 +62,7 @@ class Database:
             try:
                 print("Creating table {}: ".format(table_name), end='')
                 self.cursor.execute(table_description)
+
             except mysql.connector.Error as err:
                 if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
                     print("already exists.")
@@ -81,6 +83,7 @@ class Database:
             self.cnx.commit()
             print(self.cursor.rowcount, "Datas inserted successfully "
                                         "into Categories table")
+
         except mysql.connector.Error as err:
             print("Failed to insert datas into Categories table. "
                   "{}".format(err))
@@ -97,6 +100,7 @@ class Database:
             self.cnx.commit()
             print(self.cursor.rowcount, "Datas inserted successfully "
                                         "into Aliments table \n")
+
         except mysql.connector.Error as err:
             print("Failed to insert datas into Aliments table. {}".format(err))
 
@@ -119,12 +123,13 @@ class Database:
                 self.cnx.commit()
             print(self.cursor.rowcount, "Datas inserted successfully "
                                         "into Associated table \n")
+
         except mysql.connector.Error as err:
             print("Failed to insert datas into assoc_cat_ali table. "
                   "{}".format(err))
 
     def select_categories(self):
-        """Method that return the id's and names of all categories"""
+        """Method that returns the id's and names of all categories"""
 
         query = """SELECT id, name FROM Categories """
         self.cursor.execute(query)
@@ -132,7 +137,8 @@ class Database:
         return result
 
     def select_aliments(self, cat_id):
-        """Method that..."""
+        """Method that returns all the aliments
+        according to one category's id"""
 
         query = """SELECT Aliments.id, Aliments.name from Aliments
                 INNER JOIN assoc_cat_ali
@@ -143,6 +149,8 @@ class Database:
         return result
 
     def select_nutriscore(self, ali_id):
+        """Method that returns the nutriscore
+        of an aliment from a given id"""
 
         query = """SELECT nutriscore from Aliments
                 WHERE id = %s"""
@@ -151,7 +159,7 @@ class Database:
         return nutriscore
 
     def select_substitute(self, cat_id, nutriscore):
-        """Method that select a substitution aliment
+        """Method that returns a substitute aliment
         with a better nutriscore"""
 
         query = """SELECT `name`, `nutriscore`, `url`, `stores` from `Aliments`
@@ -169,6 +177,8 @@ class Database:
         return substitute
 
     def insert_substitute(self, aliment, substitute):
+        """Method that inserts an aliment and its substitute
+        into Substitute table"""
 
         try:
             add_datas = """INSERT INTO Substitute
@@ -194,6 +204,7 @@ class Database:
                   "{}".format(err))
 
     def select_saved_substitutes(self):
+        """Method that returns all aliments and their substitutes """
 
         query = """SELECT * FROM Substitute
                 ORDER BY id ASC"""
@@ -203,5 +214,6 @@ class Database:
 
     def close_cursor(self):
         """Method that closes database's connexion"""
+
         self.cursor.close()
         self.cnx.close()

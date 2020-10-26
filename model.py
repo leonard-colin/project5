@@ -6,7 +6,9 @@ class Model:
     """Class that defines all the interactions with the database"""
 
     def get_categories(self):
-        """Method that gets categories from Open Food Facts' API"""
+        """Method that gets categories from Open Food Facts' API
+        and returns them into a list"""
+
         get_data = requests.get("https://fr.openfoodfacts.org/categories.json")
         categories = []
         data = (get_data.json()['tags'])
@@ -15,7 +17,9 @@ class Model:
         return categories[:30]
 
     def get_aliments(self, category):
-        """Method that gets aliments from Open Food Facts' API"""
+        """Method that gets aliments from Open Food Facts' API
+        according to categories and returns them into a list"""
+
         aliments = dict()
         for cat in category:
             aliments[cat] = []
@@ -28,8 +32,8 @@ class Model:
             aliments[cat].append(ret_aliments)
         return aliments
 
-    # --- Code to save data locally into json
-    # files to make it faster for development phase ---
+    # --- Code to save data locally into json files
+    # --- to make it faster for development phase ---
 
     # def refresh_data(self, category):
     #

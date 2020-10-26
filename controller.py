@@ -5,7 +5,7 @@ from database import Database
 
 class Controller:
     """Class that defines the interactions between
-    the View, Model and Database"""
+    the View, Model and Database and sets program's process"""
 
     def __init__(self):
         """Class constructor"""
@@ -15,6 +15,8 @@ class Controller:
         self.database = Database()
 
     def pre_process(self):
+        """Method that inserts all needed data into database
+        before interacting with the user"""
 
         self.database.create_database()
         self.database.create_tables()
@@ -29,9 +31,9 @@ class Controller:
             self.database.insert_associated(cat, elements)
 
     def clean_data(self, aliments):
-        """
-            Method that...
-        """
+        """Method that takes all data from API's aliments and
+        returns a list with only the needed values"""
+
         lst_data = []
         for aliment in aliments:
             for products in aliment['products']:
@@ -52,7 +54,9 @@ class Controller:
         return lst_data
 
     def process(self):
-        """Method that defines all the program's process"""
+        """Method that defines the program's process
+        according to the user's choice"""
+
         DB = self.database.is_database_created()
         if DB is None:
             self.pre_process()
@@ -69,7 +73,8 @@ class Controller:
             quit(print("Bye"))
 
     def get_substitute(self):
-        """Method that gets a substitute aliment with a better nutriscore"""
+        """Method that gets a substitute aliment with a better nutriscore
+        and saves it into database if user wants to"""
 
         categories = self.database.select_categories()
         category = self.view.choose_category(categories)
@@ -90,6 +95,9 @@ class Controller:
             self.process()
 
     def get_saved_aliments(self):
+        """Method that gets all saved substitued aliments
+        from database and displays the result to the user"""
+
         substitute = self.database.select_saved_substitutes()
         self.view.display_saved_substitute(substitute)
         self.process()
