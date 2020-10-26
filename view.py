@@ -1,45 +1,41 @@
-from constants import PARAMETERS as p
-
-
 class View:
     """Class that defines all interactions between the program and the user"""
 
-    def first_screen(self):
-        """Method that displays a message while to the user while database is being created"""
-
-        user = p['user']
-        print("Hello {}, please wait while creating database...\n".format(user))
-
     def choose_scenario(self):
         """Method that asks the user to choose a scenario and returns its answer"""
-        # try catch ICI
-        # try:
-        scenario = input('1. Find a better aliment \n'
-                         '2. Show my substituted aliments \n'
-                         'Please enter the number for your demand : ')
-        print("\n")
-        if scenario not in ('1', '2'):
-            print("Please enter a valid choice")
+        try:
+            scenario = input('\n1. Find a better aliment \n'
+                             '2. Show my substituted aliments \n'
+                             '3. Quit program \n'
+                             'Please enter the number for your demand : ')
+            print("\n")
+            if scenario not in ('1', '2', '3'):
+                print("Please enter a valid choice")
+                scenario = self.choose_scenario()
+            return scenario
+        except ValueError:
+            print("\nPlease enter a valid choice\n")
             scenario = self.choose_scenario()
-        return scenario
-
-        # except (ValueError, TypeError):
-        #     print("Please enter a valid choice")
-        #     self.choose_scenario()
+            return scenario
 
     def choose_category(self, categories):
         """Method that asks the user to choose
         one category from the list and returns its choice"""
         try:
+            id_list = []
             for id_cat, name_cat in categories:
+                id_list.append(id_cat)
                 print("{}. {}".format(id_cat, name_cat))
-            cat_id = int(input("\nPlease choose a category number : "))
+            choice = int(input("\nPlease choose a category number : "))
             print("\n")
-            return cat_id
+            if choice not in id_list:
+                print("\nPlease enter a valid choice\n")
+                choice = self.choose_category(categories)
+            return choice
         except ValueError:
             print("\nPlease enter a valid choice\n")
-            cat_id = self.choose_category(categories)
-            return cat_id
+            choice = self.choose_category(categories)
+            return choice
 
     def choose_aliment(self, category):
         """Method that asks the user to choose an aliment to substitute and return its choice"""
@@ -59,7 +55,7 @@ class View:
             choice = self.choose_aliment(category)
             return choice
 
-    def print_substitute(self, aliment, substitute):
+    def display_substitute(self, aliment, substitute):
         """Methode that..."""
 
         try:
@@ -69,15 +65,21 @@ class View:
                     You can see it here : {}
                     You will find it in these stores : {}""".format(
                 s[0], s[1], s[2], s[3]))
-            choice = input("Would you like to save this result ?\n"
+            choice = input("\nWould you like to save this result ?\n"
                            "Press 1 to save or 2 to ignore : ")
+            print("\n")
+            if choice not in ('1', '2'):
+                print("\nPlease enter a valid choice\n")
+                choice = self.display_substitute(aliment, substitute)
             return choice
         except TypeError:
-            print("This aliment already have a nutriscore 'A'\n"
-                  "You can choose another aliment")
-            choice = self.print_substitute(aliment, substitute)
-            return choice
+            print("This aliment already have a nutriscore 'A'\n")
 
-    # def save_substitute(self):
-    #     choice = input("Would you like to save this result ?\n"
-    #                    "Press 1 to save or 2 to ignore")
+    def display_saved_substitute(self, substitute):
+        """Method that..."""
+
+        print("Here are all your substitutes :\n")
+        for s in substitute:
+            print("{}/  {}\n"
+                  "substitute : {}\n".format(s[0], s[1], s[2]))
+        print("\n")

@@ -1,6 +1,7 @@
 from model import Model
 from view import View
 from database import Database
+from constants import DB_NAME
 
 
 class Controller:
@@ -14,8 +15,10 @@ class Controller:
         self.database = Database()
 
     def pre_process(self):
+
+        self.database.create_database()
+        self.database.create_tables()
         categories = self.model.get_categories()
-        # categories = [[category] for category in categories]
         self.database.insert_categories(categories)
         aliments = self.model.get_aliments(categories)
         for cat, elements in aliments.items():
@@ -25,18 +28,9 @@ class Controller:
         for cat, elements in aliments.items():
             self.database.insert_associated(cat, elements)
 
-        # for category in categories:
-        #     for aliment in aliments:
-        #         #for aliment in categories:
-        #         code_tag = 1
-        #         aliment = aliment[code_tag]
-        #         self.database.insert_associated(category, aliment[code_tag])
-
     def clean_data(self, aliments):
         """
-            disgusting CODE
-        :param aliments:
-        :return:
+            Method that...
         """
         lst_data = []
         for aliment in aliments:
@@ -51,30 +45,23 @@ class Controller:
                                 products['stores']]
                         lst_data.append(data)
         return lst_data
-        # self.database.insert_aliments(lst_data)
-        # parsed_data = []
-        # valid_tag = ["code", "product_name_fr", "nutrition_grade_fr", "url", "stores"]
-        # for aliment in aliments:
-        #     for products in aliment["products"]:
-        #         # d = dict()
-        #         for tag in products:
-        #             if tag in valid_tag:
-        #                 parsed_data.append(products[valid_tag])
-        #                 #d[tag] = products[tag]
-        #         # for key in d.values():
-        #         #     parsed_data.append(key)
-        # print(parsed_data)
-        # return parsed_data
 
     def process(self):
         """Method that defines all the program's process"""
-        # self.view.first_screen()
-        self.pre_process()
+        DB = self.database.is_database_created()
+        if DB is None:
+            self.pre_process()
+        else:
+            pass
+
         scenario = self.view.choose_scenario()
         if scenario == '1':
             self.get_substitute()
         elif scenario == '2':
             self.get_saved_aliments()
+        elif scenario == '3':
+            self.database.close_cursor()
+            quit(print("Bye"))
 
     def get_substitute(self):
         """Method that gets a substitute aliment with a better nutriscore"""
@@ -86,13 +73,18 @@ class Controller:
         aliment = self.view.choose_aliment(aliments)
 
         nutriscore = self.database.select_nutriscore(aliment)
-        if nutriscore == 'a':
-            #self.view.is_nutrscore_a(aliment)
-            self.get_substitute()
-        else:
-            substitute = self.database.select_substitute(category, nutriscore)  # nutriscore)
-            choice = self.view.print_substitute(aliment, substitute)
-            if choice == '1':
-                self.database.insert_substitute(aliment, substitute)
-            elif choice == '2':
-                self.process()
+        substitute = self.database.select_substitute(category, nutriscore)  # nutriscore)
+
+        choice = self.view.display_substitute(aliment, substitute)
+        if choice == '1':
+            self.database.insert_substitute(aliment, substitute)
+            self.process()
+        elif choice == '2':
+            self.process()
+        elif substitute is None:
+            self.process()
+
+    def get_saved_aliments(self):
+        substitute = self.database.select_saved_substitutes()
+        self.view.display_saved_substitute(substitute)
+        self.process()

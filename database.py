@@ -13,16 +13,29 @@ class Database:
 
         self.cnx = mysql.connector.connect(user=par['user'], password=par['password'])  # charset='utf8')
         self.cursor = self.cnx.cursor(buffered=True)
-        self.create_database()
-        self.create_tables()
+
+    def is_database_created(self):
+        """Method that checks if the database already exists
+        and returns the name of the database if it does"""
+
+        query = """SELECT SCHEMA_NAME
+                FROM INFORMATION_SCHEMA.SCHEMATA
+                WHERE SCHEMA_NAME = %s"""
+        self.cursor.execute(query, (DB_NAME,))
+        db = self.cursor.fetchone()
+        if db is None:
+            pass
+        else:
+            db = ''.join(db)
+            self.cursor.execute("USE {}".format(DB_NAME))
+            return db
 
     def create_database(self):
         """Method that creates a database"""
 
         try:
-            self.cursor.execute("DROP DATABASE IF EXISTS Openfoodfacts")
             self.cursor.execute(
-                "CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(DB_NAME))
+                "CREATE DATABASE IF NOT EXISTS {} DEFAULT CHARACTER SET 'utf8'".format(DB_NAME))
             print("Database {} created successfully.".format(DB_NAME))
         except mysql.connector.Error as err:
             print("Failed creating database: {}".format(err))
@@ -52,20 +65,18 @@ class Database:
                     print(err.msg)
             else:
                 print("OK")
-        print("\n Inserting datas...\n")
 
     def insert_categories(self, data_categories):
         """Method that inserts categories into Categories database's table"""
 
-        data_categories = [[category] for category in data_categories]
         try:
-            add_categories = ("INSERT INTO `Categories`"
+            add_categories = ("INSERT IGNORE INTO `Categories`"
                               "(name) "
                               "VALUES (%s)")
+            data_categories = [[category] for category in data_categories]
             self.cursor.executemany(add_categories, data_categories)
             self.cnx.commit()
             print(self.cursor.rowcount, "Datas inserted successfully into Categories table")
-            # self.cursor.close()
         except mysql.connector.Error as err:
             print("Failed to insert datas into Categories table. {}".format(err))
 
@@ -80,7 +91,6 @@ class Database:
             self.cursor.executemany(add_aliments, data_aliments)  # id)  # [data, id])
             self.cnx.commit()
             print(self.cursor.rowcount, "Datas inserted successfully into Aliments table \n")
-            # self.cursor.close()
         except mysql.connector.Error as err:
             print("Failed to insert datas into Aliments table. {}".format(err))
 
@@ -135,11 +145,11 @@ class Database:
     def select_substitute(self, cat_id, nutriscore):
         """Method that select a substitution aliment with a better nutriscore"""
 
-        query = '''SELECT `name`, `nutriscore`, `url`, `stores` from `Aliments`
+        query = """SELECT `name`, `nutriscore`, `url`, `stores` from `Aliments`
                     INNER JOIN `assoc_cat_ali`
                     ON Aliments.barcode = assoc_cat_ali.barcode_ali
                     WHERE assoc_cat_ali.cat_id = %s
-                    AND nutriscore < %s'''
+                    AND nutriscore < %s"""
 
         nutriscore = ''.join(nutriscore)
         ali_id = int(cat_id)
@@ -161,22 +171,27 @@ class Database:
 
             self.cursor.execute(query, (aliment,))
             aliment = self.cursor.fetchone()
-            
+
             aliment = ''.join(aliment)
             substitute = '\n'.join(substitute)
 
             values = [aliment, substitute]
             self.cursor.execute(add_datas, values)
             self.cnx.commit()
-            print(self.cursor.rowcount, "Datas inserted successfully into Substitute table \n")
+            print(self.cursor.rowcount, "substitute saved successfully.")
+
         except mysql.connector.Error as err:
             print("Failed to insert datas into Substitute table. {}".format(err))
+
+    def select_saved_substitutes(self):
+
+        query = """SELECT * FROM Substitute
+                ORDER BY id ASC"""
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        return result
 
     def close_cursor(self):
         """Method that closes database's connexion"""
         self.cursor.close()
         self.cnx.close()
-        # finally:
-        #     if self.cnx.is_connected():
-        #         self.cnx.close()
-        #         print("MySQL connection is closed")
