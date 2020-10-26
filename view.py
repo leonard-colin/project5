@@ -2,7 +2,8 @@ class View:
     """Class that defines all interactions between the program and the user"""
 
     def choose_scenario(self):
-        """Method that asks the user to choose a scenario and returns its answer"""
+        """Method that asks the user to choose a scenario
+        and returns its answer"""
         try:
             scenario = input('\n1. Find a better aliment \n'
                              '2. Show my substituted aliments \n'
@@ -38,7 +39,8 @@ class View:
             return choice
 
     def choose_aliment(self, category):
-        """Method that asks the user to choose an aliment to substitute and return its choice"""
+        """Method that asks the user to choose an aliment to substitute
+        and return its choice"""
         try:
             id_list = []
             for ali_id, name in category:

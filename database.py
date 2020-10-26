@@ -6,12 +6,14 @@ from constants import PARAMETERS as par, DB_NAME, TABLES
 
 
 class Database:
-    """Class that defines all the parameters and all the datas contained in the database"""
+    """Class that defines all the parameters
+    and all the datas contained in the database"""
 
     def __init__(self):
         """Class constructor that sets cursors' parameters"""
 
-        self.cnx = mysql.connector.connect(user=par['user'], password=par['password'])  # charset='utf8')
+        self.cnx = mysql.connector.connect(user=par['user'],
+                                           password=par['password'])
         self.cursor = self.cnx.cursor(buffered=True)
 
     def is_database_created(self):
@@ -35,7 +37,8 @@ class Database:
 
         try:
             self.cursor.execute(
-                "CREATE DATABASE IF NOT EXISTS {} DEFAULT CHARACTER SET 'utf8'".format(DB_NAME))
+                "CREATE DATABASE IF NOT EXISTS {} "
+                "DEFAULT CHARACTER SET 'utf8'".format(DB_NAME))
             print("Database {} created successfully.".format(DB_NAME))
         except mysql.connector.Error as err:
             print("Failed creating database: {}".format(err))
@@ -76,9 +79,11 @@ class Database:
             data_categories = [[category] for category in data_categories]
             self.cursor.executemany(add_categories, data_categories)
             self.cnx.commit()
-            print(self.cursor.rowcount, "Datas inserted successfully into Categories table")
+            print(self.cursor.rowcount, "Datas inserted successfully "
+                                        "into Categories table")
         except mysql.connector.Error as err:
-            print("Failed to insert datas into Categories table. {}".format(err))
+            print("Failed to insert datas into Categories table. "
+                  "{}".format(err))
 
     def insert_aliments(self, data_aliments):
         """Method that inserts aliments into Aliments database's table"""
@@ -88,9 +93,10 @@ class Database:
                             "(barcode, name, nutriscore, url, stores) "
                             "VALUES (%s, %s, %s, %s, %s) ")
 
-            self.cursor.executemany(add_aliments, data_aliments)  # id)  # [data, id])
+            self.cursor.executemany(add_aliments, data_aliments)
             self.cnx.commit()
-            print(self.cursor.rowcount, "Datas inserted successfully into Aliments table \n")
+            print(self.cursor.rowcount, "Datas inserted successfully "
+                                        "into Aliments table \n")
         except mysql.connector.Error as err:
             print("Failed to insert datas into Aliments table. {}".format(err))
 
@@ -103,7 +109,7 @@ class Database:
                         (barcode_ali, cat_id)
                         VALUES (%s, %s)"""
 
-            query = "SELECT `id` FROM `Categories` WHERE Categories.name = %s"  # "''' + cat + '''"'''
+            query = "SELECT `id` FROM `Categories` WHERE Categories.name = %s"
             self.cursor.execute(query, (cat,))
             id_cat = self.cursor.fetchone()[0]
 
@@ -111,9 +117,11 @@ class Database:
                 d = (data[0], id_cat)
                 self.cursor.execute(add_datas, d)
                 self.cnx.commit()
-            print(self.cursor.rowcount, "Datas inserted successfully into Associated table \n")
+            print(self.cursor.rowcount, "Datas inserted successfully "
+                                        "into Associated table \n")
         except mysql.connector.Error as err:
-            print("Failed to insert datas into assoc_cat_ali table. {}".format(err))
+            print("Failed to insert datas into assoc_cat_ali table. "
+                  "{}".format(err))
 
     def select_categories(self):
         """Method that return the id's and names of all categories"""
@@ -143,7 +151,8 @@ class Database:
         return nutriscore
 
     def select_substitute(self, cat_id, nutriscore):
-        """Method that select a substitution aliment with a better nutriscore"""
+        """Method that select a substitution aliment
+        with a better nutriscore"""
 
         query = """SELECT `name`, `nutriscore`, `url`, `stores` from `Aliments`
                     INNER JOIN `assoc_cat_ali`
@@ -181,7 +190,8 @@ class Database:
             print(self.cursor.rowcount, "substitute saved successfully.")
 
         except mysql.connector.Error as err:
-            print("Failed to insert datas into Substitute table. {}".format(err))
+            print("Failed to insert datas into Substitute table. "
+                  "{}".format(err))
 
     def select_saved_substitutes(self):
 

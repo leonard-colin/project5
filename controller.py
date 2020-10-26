@@ -1,11 +1,11 @@
 from model import Model
 from view import View
 from database import Database
-from constants import DB_NAME
 
 
 class Controller:
-    """Class that defines the interactions between the View, Model and Database"""
+    """Class that defines the interactions between
+    the View, Model and Database"""
 
     def __init__(self):
         """Class constructor"""
@@ -35,12 +35,17 @@ class Controller:
         lst_data = []
         for aliment in aliments:
             for products in aliment['products']:
-                valid_tag = ["product_name_fr", "nutriscore_grade", "url", "stores"]
+                valid_tag = ["product_name_fr",
+                             "nutriscore_grade",
+                             "url",
+                             "stores"]
                 if not all(tag in products for tag in valid_tag):
                     pass
                 else:
                     if products['product_name_fr'] != '':
-                        data = [products['code'], products['product_name_fr'], products['nutriscore_grade'],
+                        data = [products['code'],
+                                products['product_name_fr'],
+                                products['nutriscore_grade'],
                                 products['url'],
                                 products['stores']]
                         lst_data.append(data)
@@ -73,7 +78,7 @@ class Controller:
         aliment = self.view.choose_aliment(aliments)
 
         nutriscore = self.database.select_nutriscore(aliment)
-        substitute = self.database.select_substitute(category, nutriscore)  # nutriscore)
+        substitute = self.database.select_substitute(category, nutriscore)
 
         choice = self.view.display_substitute(aliment, substitute)
         if choice == '1':

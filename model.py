@@ -20,24 +20,30 @@ class Model:
         for cat in category:
             aliments[cat] = []
             ret_aliments = requests.get(
-                "https://fr.openfoodfacts.org/cgi/search.pl?action=process&tagtype_0=categories&tag_contains_0=contains&tag_0="
+                "https://fr.openfoodfacts.org/cgi/search.pl?"
+                "action=process&tagtype_0=categories"
+                "&tag_contains_0=contains&tag_0="
                 + str(cat) + "&json=true")
             ret_aliments = ret_aliments.json()
             aliments[cat].append(ret_aliments)
         return aliments
 
-    # --- Code to save data locally into json files to make it faster for development phase ---
+    # --- Code to save data locally into json
+    # files to make it faster for development phase ---
 
     # def refresh_data(self, category):
     #
-    #     categories_data = requests.get("https://fr.openfoodfacts.org/categories.json")
+    #     categories_data = requests.get(
+    #     "https://fr.openfoodfacts.org/categories.json"
+    #     )
     #     f = open("api_data_files/of_api_cat.json", "w")
     #     f.write(str(categories_data.text))
     #     f.close()
     #
     #     for cat in category:
     #         ret_aliments = requests.get(
-    #             "https://fr.openfoodfacts.org/cgi/search.pl?action=process&tagtype_0=categories&tag_contains_0=contains&tag_0="
+    #             "https://fr.openfoodfacts.org/cgi/search.pl?
+    #             action=process&tagtype_0=categories&tag_contains_0=contains&tag_0="
     #             + str(cat) + "&json=true")
     #         f = open("api_data_files/of_api_ali" + str(cat) + ".json", "w")
     #         f.write(str(ret_aliments.text))
@@ -61,7 +67,8 @@ class Model:
     #     for cat in category:
     #         aliments[cat] = []
     #
-    #         with open("api_data_files/of_api_ali" + str(cat) + ".json") as file:
+    #         with open("api_data_files/of_api_ali"
+    #         + str(cat) + ".json") as file:
     #             file = file.read()
     #         ret_aliments = json.loads(file)
     #         aliments[cat].append(ret_aliments)
