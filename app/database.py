@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import mysql.connector
 from mysql.connector import errorcode
-from constants import PARAMETERS as par, DB_NAME, TABLES
+from app.constants import PARAMETERS as par, DB_NAME, TABLES
 
 
 class Database:

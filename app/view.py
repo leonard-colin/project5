@@ -46,7 +46,7 @@ class View:
     def choose_aliment(self, category):
         """Method that asks the user to choose an aliment to substitute
         and returns his choice"""
-    
+
         try:
             id_list = []
             for ali_id, name in category:

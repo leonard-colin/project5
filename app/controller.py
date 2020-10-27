@@ -1,6 +1,6 @@
-from model import Model
-from view import View
-from database import Database
+from app.model import Model
+from app.view import View
+from app.database import Database
 
 
 class Controller:
