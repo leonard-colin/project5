@@ -91,11 +91,15 @@ class View:
     def display_saved_substitute(self, substitute):
         """Method that displays all saved substituted aliments to the user"""
 
-        print("Here are all your substitutes :\n")
+        # if substitute == [[], []]:
+        if not substitute[0] and not substitute[1]:  # No saved substitutes
+            print("You don't have any saved substitute yet")
+        else:
+            print("Here are all your substitutes :\n")
 
-        for element in zip(substitute[0], substitute[1]):
-            e = element
+            for element in zip(substitute[0], substitute[1]):
+                e = element
 
-            print("Chosen aliment: {}\n"
-                  "Substitute: {}\n".format(e[0], e[1]))
-        print("\n")
+                print("* Chosen aliment: {}\n"
+                      "  Substitute: {}\n".format(e[0], e[1]))
+            print("\n")

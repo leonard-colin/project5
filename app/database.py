@@ -16,22 +16,6 @@ class Database:
                                            password=par['password'])
         self.cursor = self.cnx.cursor(buffered=True)
 
-    def is_database_created(self):
-        """Method that verify if the database already exists
-        and returns the name of the database if it does"""
-
-        query = """SELECT SCHEMA_NAME
-                FROM INFORMATION_SCHEMA.SCHEMATA
-                WHERE SCHEMA_NAME = %s"""
-        self.cursor.execute(query, (DB_NAME,))
-        db = self.cursor.fetchone()
-        if db is None:
-            pass
-        else:
-            db = ''.join(db)
-            self.cursor.execute("USE {}".format(DB_NAME))
-            return db
-
     def create_database(self):
         """Method that creates a database"""
 
@@ -53,6 +37,22 @@ class Database:
                 self.cnx.database = DB_NAME
             else:
                 print(err)
+
+    def is_database_created(self):
+        """Method that verify if the database already exists
+            and returns the name of the database if it does"""
+
+        query = """SELECT SCHEMA_NAME
+                    FROM INFORMATION_SCHEMA.SCHEMATA
+                    WHERE SCHEMA_NAME = %s"""
+        self.cursor.execute(query, (DB_NAME,))
+        db = self.cursor.fetchone()
+        if db is None:
+            pass
+        else:
+            db = ''.join(db)
+            self.cursor.execute("USE {}".format(DB_NAME))
+            return db
 
     def create_tables(self):
         """Method that creates database's tables"""
@@ -187,7 +187,6 @@ class Database:
 
             query_ali_barcode = """SELECT aliment.barcode FROM aliment
                             WHERE id = %s"""
-            # data_aliment = str(aliment)
 
             self.cursor.execute(query_ali_barcode, (aliment,))
             aliment = self.cursor.fetchone()

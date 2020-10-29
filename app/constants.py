@@ -25,7 +25,6 @@ TABLES['aliment'] = (
     `stores` VARCHAR(150) NOT NULL
     )
     Engine=InnoDB """
-
 )
 
 TABLES['asso_cat_ali'] = (
