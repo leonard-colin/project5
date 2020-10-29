@@ -7,18 +7,18 @@ PARAMETERS = {
 DB_NAME = PARAMETERS['database']
 
 TABLES = {}
-TABLES['Categories'] = (
-    """CREATE TABLE `Categories` (
+TABLES['category'] = (
+    """CREATE TABLE `category` (
     `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(250) NOT NULL
     )
     Engine = InnoDB"""
 )
 
-TABLES['Aliments'] = (
-    """ CREATE TABLE `Aliments` (
+TABLES['aliment'] = (
+    """ CREATE TABLE `aliment` (
     `id` INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    `barcode` VARCHAR(100) PRIMARY KEY NOT NULL,
+    `barcode` BIGINT PRIMARY KEY NOT NULL,
     `name` VARCHAR(250) NOT NULL,
     `nutriscore` CHAR(1) NOT NULL,
     `url` TEXT NOT NULL,
@@ -28,24 +28,28 @@ TABLES['Aliments'] = (
 
 )
 
-TABLES['assoc_cat_ali'] = (
-    """ CREATE TABLE `assoc_cat_ali` (
+TABLES['asso_cat_ali'] = (
+    """ CREATE TABLE `asso_cat_ali` (
     `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    `barcode_ali` VARCHAR(100) NOT NULL,
+    `barcode_ali` BIGINT NOT NULL,
     `cat_id` INT UNSIGNED NOT NULL,
     CONSTRAINT fk_code_ali FOREIGN KEY (`barcode_ali`)
-    REFERENCES Aliments(`barcode`),
+    REFERENCES aliment(`barcode`),
     CONSTRAINT fk_id_cat FOREIGN KEY (`cat_id`)
-    REFERENCES Categories(`id`)
+    REFERENCES category(`id`)
     )
     ENGINE=InnoDB """
 )
 
-TABLES['Substitute'] = (
+TABLES['substitute'] = (
     """ CREATE TABLE `Substitute` (
     `id` INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    `ali_source` VARCHAR(250) NOT NULL,
-    `ali_sub` VARCHAR(250) NOT NULL
+    `ali_source_barcode` BIGINT NOT NULL,
+    `ali_sub_barcode` BIGINT NOT NULL,
+    CONSTRAINT fk_ali_source FOREIGN KEY (`ali_source_barcode`)
+    REFERENCES aliment(`barcode`),
+    CONSTRAINT fk_ali_sub FOREIGN KEY (`ali_sub_barcode`)
+    REFERENCES aliment(`barcode`)
     )
 ENGINE=InnoDB """
 )

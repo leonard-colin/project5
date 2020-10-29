@@ -72,48 +72,48 @@ class Database:
                 print("OK")
 
     def insert_categories(self, data_categories):
-        """Method that inserts categories into Categories database's table"""
+        """Method that inserts categories into category database's table"""
 
         try:
-            add_categories = ("INSERT IGNORE INTO `Categories`"
+            add_categories = ("INSERT IGNORE INTO `category`"
                               "(name) "
                               "VALUES (%s)")
             data_categories = [[category] for category in data_categories]
             self.cursor.executemany(add_categories, data_categories)
             self.cnx.commit()
             print(self.cursor.rowcount, "Datas inserted successfully "
-                                        "into Categories table")
+                                        "into category table")
 
         except mysql.connector.Error as err:
-            print("Failed to insert datas into Categories table. "
+            print("Failed to insert datas into category table. "
                   "{}".format(err))
 
     def insert_aliments(self, data_aliments):
-        """Method that inserts aliments into Aliments database's table"""
+        """Method that inserts aliments into aliment database's table"""
 
         try:
-            add_aliments = ("INSERT IGNORE INTO Aliments "
+            add_aliments = ("INSERT IGNORE INTO aliment "
                             "(barcode, name, nutriscore, url, stores) "
                             "VALUES (%s, %s, %s, %s, %s) ")
 
             self.cursor.executemany(add_aliments, data_aliments)
             self.cnx.commit()
             print(self.cursor.rowcount, "Datas inserted successfully "
-                                        "into Aliments table \n")
+                                        "into aliment table \n")
 
         except mysql.connector.Error as err:
-            print("Failed to insert datas into Aliments table. {}".format(err))
+            print("Failed to insert datas into aliment table. {}".format(err))
 
     def insert_associated(self, cat, datas):
         """Method that inserts the associated aliments of each category
-        into assoc_cat_ali database's table"""
+        into asso_cat_ali database's table"""
 
         try:
-            add_datas = """INSERT IGNORE INTO assoc_cat_ali
+            add_datas = """INSERT IGNORE INTO asso_cat_ali
                         (barcode_ali, cat_id)
                         VALUES (%s, %s)"""
 
-            query = "SELECT `id` FROM `Categories` WHERE Categories.name = %s"
+            query = "SELECT `id` FROM `category` WHERE category.name = %s"
             self.cursor.execute(query, (cat,))
             id_cat = self.cursor.fetchone()[0]
 
@@ -122,16 +122,16 @@ class Database:
                 self.cursor.execute(add_datas, d)
                 self.cnx.commit()
             print(self.cursor.rowcount, "Datas inserted successfully "
-                                        "into Associated table \n")
+                                        "into associated table \n")
 
         except mysql.connector.Error as err:
-            print("Failed to insert datas into assoc_cat_ali table. "
+            print("Failed to insert datas into asso_cat_ali table. "
                   "{}".format(err))
 
     def select_categories(self):
         """Method that returns the id's and names of all categories"""
 
-        query = """SELECT id, name FROM Categories """
+        query = """SELECT id, name FROM category """
         self.cursor.execute(query)
         result = self.cursor.fetchall()
         return result
@@ -140,10 +140,10 @@ class Database:
         """Method that returns all the aliments
         according to one category's id"""
 
-        query = """SELECT Aliments.id, Aliments.name from Aliments
-                INNER JOIN assoc_cat_ali
-                ON Aliments.barcode = assoc_cat_ali.barcode_ali
-                WHERE assoc_cat_ali.cat_id = %s"""
+        query = """SELECT aliment.id, aliment.name from aliment
+                INNER JOIN asso_cat_ali
+                ON aliment.barcode = asso_cat_ali.barcode_ali
+                WHERE asso_cat_ali.cat_id = %s"""
         self.cursor.execute(query, (cat_id,))
         result = self.cursor.fetchall()
         return result
@@ -152,7 +152,7 @@ class Database:
         """Method that returns the nutriscore
         of an aliment from a given id"""
 
-        query = """SELECT nutriscore from Aliments
+        query = """SELECT nutriscore from aliment
                 WHERE id = %s"""
         self.cursor.execute(query, (ali_id,))
         nutriscore = self.cursor.fetchone()
@@ -162,10 +162,10 @@ class Database:
         """Method that returns a substitute aliment
         with a better nutriscore"""
 
-        query = """SELECT `name`, `nutriscore`, `url`, `stores` from `Aliments`
-                    INNER JOIN `assoc_cat_ali`
-                    ON Aliments.barcode = assoc_cat_ali.barcode_ali
-                    WHERE assoc_cat_ali.cat_id = %s
+        query = """SELECT barcode, name, nutriscore, url, stores from aliment
+                    INNER JOIN asso_cat_ali
+                    ON aliment.barcode = asso_cat_ali.barcode_ali
+                    WHERE asso_cat_ali.cat_id = %s
                     AND nutriscore < %s"""
 
         nutriscore = ''.join(nutriscore)
@@ -178,38 +178,56 @@ class Database:
 
     def insert_substitute(self, aliment, substitute):
         """Method that inserts an aliment and its substitute
-        into Substitute table"""
+        into substitute table"""
 
         try:
-            add_datas = """INSERT INTO Substitute
-                    (ali_source, ali_sub)
+            add_datas = """INSERT INTO substitute
+                    (ali_source_barcode, ali_sub_barcode)
                     Values (%s, %s)"""
 
-            query = """SELECT Aliments.name FROM Aliments
-                    WHERE id = %s"""
+            query_ali_barcode = """SELECT aliment.barcode FROM aliment
+                            WHERE id = %s"""
+            # data_aliment = str(aliment)
 
-            self.cursor.execute(query, (aliment,))
+            self.cursor.execute(query_ali_barcode, (aliment,))
             aliment = self.cursor.fetchone()
 
-            aliment = ''.join(aliment)
-            substitute = '\n'.join(substitute)
-
-            values = [aliment, substitute]
+            values = aliment[0], substitute[0]
             self.cursor.execute(add_datas, values)
             self.cnx.commit()
             print(self.cursor.rowcount, "substitute saved successfully.")
 
         except mysql.connector.Error as err:
-            print("Failed to insert datas into Substitute table. "
+            print("Failed to insert datas into substitute table. "
                   "{}".format(err))
 
     def select_saved_substitutes(self):
         """Method that returns all aliments and their substitutes """
 
-        query = """SELECT * FROM Substitute
-                ORDER BY id ASC"""
-        self.cursor.execute(query)
-        result = self.cursor.fetchall()
+        query_ali_source = """SELECT name FROM aliment
+                        INNER JOIN substitute
+                        ON aliment.barcode = substitute.ali_source_barcode"""
+
+        self.cursor.execute(query_ali_source)
+        ali_source = self.cursor.fetchone()
+        source_data = []
+        while ali_source is not None:
+            ali_source = ''.join(ali_source)
+            source_data.append(ali_source)
+            ali_source = self.cursor.fetchone()
+
+        query_ali_sub = """SELECT name, nutriscore, url, stores from aliment
+                        INNER JOIN substitute
+                        ON aliment.barcode = substitute.ali_sub_barcode"""
+        self.cursor.execute(query_ali_sub)
+        ali_sub = self.cursor.fetchone()
+        sub_data = []
+        while ali_sub is not None:
+            ali_sub = ', '.join(ali_sub)
+            sub_data.append(ali_sub)
+            ali_sub = self.cursor.fetchone()
+
+        result = [source_data, sub_data]
         return result
 
     def close_cursor(self):

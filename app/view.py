@@ -75,7 +75,7 @@ class View:
             print("""{} has a better nutriscore with {}.
                     You can see it here : {}
                     You will find it in these stores : {}""".format(
-                s[0], s[1], s[2], s[3]))
+                s[1], s[2], s[3], s[4]))
 
             choice = input("\nWould you like to save this result ?\n"
                            "Press 1 to save or 2 to ignore : ")
@@ -92,7 +92,10 @@ class View:
         """Method that displays all saved substituted aliments to the user"""
 
         print("Here are all your substitutes :\n")
-        for s in substitute:
-            print("{}/  {}\n"
-                  "substitute : {}\n".format(s[0], s[1], s[2]))
+
+        for element in zip(substitute[0], substitute[1]):
+            e = element
+
+            print("Chosen aliment: {}\n"
+                  "Substitute: {}\n".format(e[0], e[1]))
         print("\n")
